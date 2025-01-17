@@ -21,5 +21,17 @@ model User {
 
     emailAddress String @unique
 
-    credits Int @default(150)
+    credits Int    @default(150)
+    notes   Note[]
+}
+
+model Note {
+    id     String @id @default(cuid())
+    userId String
+
+    name      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id])
 }
