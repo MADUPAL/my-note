@@ -26,12 +26,12 @@ model User {
 }
 
 model Note {
-    id     String @id @default(cuid())
-    userId String
+    id Int @id @default(autoincrement())
 
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
-
-    user User @relation(fields: [userId], references: [id])
+    name        String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @default(now())
+    editorState String?
+    user        User     @relation(fields: [userId], references: [id])
+    userId      String
 }
