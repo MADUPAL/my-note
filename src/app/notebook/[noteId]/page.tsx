@@ -1,3 +1,4 @@
+import DeleteButton from "@/components/DeleteButton";
 import TipTapEditor from "@/components/TipTapEditor";
 import { Button } from "@/components/ui/button";
 import { db } from "@/server/db";
@@ -48,7 +49,9 @@ const NotebookPage = async ({ params }: Props) => {
           </span>
           <span className="mx-1 inline-block">/</span>
           <span className="font-semibold text-stone-500">{note.name}</span>
-          <div className="ml-auto">DELETE BUTTON</div>
+          <div className="ml-auto">
+            <DeleteButton noteId={note.id} />
+          </div>
         </div>
 
         <div className="h-4"></div>
