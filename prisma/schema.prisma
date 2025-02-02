@@ -2,12 +2,14 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+    provider   = "postgresql"
+    url        = env("DATABASE_URL")
+    extensions = [vector]
 }
 
 model User {
@@ -21,17 +23,78 @@ model User {
 
     emailAddress String @unique
 
-    credits Int    @default(150)
-    notes   Note[]
+    credits  Int        @default(150)
+    notes    Note[]
+    Event    Event[]
+    Schedule Schedule[]
 }
 
 model Note {
     id Int @id @default(autoincrement())
 
-    name        String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @default(now())
-    editorState String?
-    user        User     @relation(fields: [userId], references: [id])
-    userId      String
+    name          String
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @default(now())
+    editorState   String?
+    user          User            @relation(fields: [userId], references: [id])
+    userId        String
+    NoteEmbedding NoteEmbedding[]
+}
+
+model NoteEmbedding {
+    id String @id @default(cuid())
+
+    summaryEmbedding Unsupported("vector(768)")?
+    noteContent      String
+    noteName         String
+    summary          String
+
+    noteId Int
+    note   Note @relation(fields: [noteId], references: [id])
+}
+
+model Event {
+    id                String   @id @default(uuid())
+    description       String?
+    durationInMinutes Int
+    isActive          Boolean  @default(true)
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @default(now())
+    userId            String
+    User              User     @relation(fields: [userId], references: [id])
+}
+
+model Schedule {
+    id        String   @id @default(uuid())
+    timezone  String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+
+    userId               String
+    User                 User                   @relation(fields: [userId], references: [id])
+    ScheduleAvailability ScheduleAvailability[]
+}
+
+model ScheduleAvailability {
+    id        String                @id @default(uuid())
+    startTime String
+    endTime   String
+    dayOfWeek ScheduleDayOfWeekEnum
+    createdAt DateTime              @default(now())
+    updatedAt DateTime              @default(now())
+
+    scheduleId String
+    schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+    @@index([scheduleId])
+}
+
+enum ScheduleDayOfWeekEnum {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
 }
