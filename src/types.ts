@@ -6,3 +6,14 @@ export interface NoteType {
   editorState: string | null;
   userId: string;
 }
+
+export type EventCardProps = {
+  userId: string;
+  name: string;
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  description: string | null;
+  durationInMinutes: number;
+  isActive: boolean;
+};

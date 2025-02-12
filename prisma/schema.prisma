@@ -55,6 +55,7 @@ model NoteEmbedding {
 
 model Event {
     id                String   @id @default(uuid())
+    name              String
     description       String?
     durationInMinutes Int
     isActive          Boolean  @default(true)
